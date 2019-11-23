@@ -38,9 +38,9 @@ namespace DatingApp.API.Controllers
 
             return Ok(messageFromRepo);
         }
-        
+
         [HttpGet]
-        public async Task<IActionResult> GetMessagesForUser(int userId, 
+        public async Task<IActionResult> GetMessagesForUser(int userId,
             [FromQuery]MessageParams messageParams)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -52,9 +52,9 @@ namespace DatingApp.API.Controllers
 
             var messages = _mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
 
-            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize, 
+            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize,
                 messagesFromRepo.TotalCount, messagesFromRepo.TotalPages);
-            
+
             return Ok(messages);
         }
 
@@ -85,7 +85,7 @@ namespace DatingApp.API.Controllers
 
             if (recipient == null)
                 return BadRequest("Could not find user");
-            
+
             var message = _mapper.Map<Message>(messageForCreationDto);
 
             _repo.Add(message);
@@ -93,7 +93,7 @@ namespace DatingApp.API.Controllers
             if (await _repo.SaveAll())
             {
                 var messageToReturn = _mapper.Map<MessageToReturnDto>(message);
-                return CreatedAtRoute("GetMessage", new {id = message.Id}, messageToReturn);
+                return CreatedAtRoute("GetMessage", new { userId, id = message.Id }, messageToReturn);
             }
 
             throw new Exception("Creating the message failed on save");
@@ -103,7 +103,7 @@ namespace DatingApp.API.Controllers
         public async Task<IActionResult> DeleteMessage(int id, int userId)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();  
+                return Unauthorized();
 
             var messageFromRepo = await _repo.GetMessage(id);
 
@@ -115,7 +115,7 @@ namespace DatingApp.API.Controllers
 
             if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
                 _repo.Delete(messageFromRepo);
-            
+
             if (await _repo.SaveAll())
                 return NoContent();
 
@@ -126,7 +126,7 @@ namespace DatingApp.API.Controllers
         public async Task<IActionResult> MarkMessageAsRead(int userId, int id)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();  
+                return Unauthorized();
 
             var message = await _repo.GetMessage(id);
 
