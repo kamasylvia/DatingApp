@@ -1,0 +1,13 @@
+mysql:
+  image: mysql
+  container_name: mysql
+  restart: always
+  environment:
+    MYSQL_DATABASE: 'datingApp'
+    MYSQL_USER: 'appuser'
+    MYSQL_PASSWORD: 'password'
+    MYSQL_ROOT_PASSWORD: 'password'
+  ports:
+    - 3306:3306
+  volumes:
+    - ./database:/var/lib/mysql
