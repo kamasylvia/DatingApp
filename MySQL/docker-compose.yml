@@ -2,10 +2,10 @@ mysql:
     #构建mysql镜像
     image: mysql
     container_name: mysql # 容器名
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_DATABASE: datingapp
+      MYSQL_DATABASE: datingApp
       MYSQL_ROOT_PASSWORD: password #root管理员用户密码
       MYSQL_USER: appuser   #创建test用户
       MYSQL_PASSWORD: password  #设置test用户的密码
