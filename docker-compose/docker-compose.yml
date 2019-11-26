@@ -1,4 +1,7 @@
-db:
+version: "3"
+
+services: 
+  db:
     #构建mysql镜像
     image: mysql
     container_name: mysql # 容器名
@@ -16,3 +19,12 @@ db:
       - "./data/db:/var/lib/mysql"  
         #容器的配置目录挂载到host物理机目录/e/docker/mysql/data/conf  
       - "./data/conf:/etc/mysql/conf.d"
+        
+  datingapp:
+    image: nastaley/datingapp
+    container_name: datingapp
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
